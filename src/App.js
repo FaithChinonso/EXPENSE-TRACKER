@@ -1,53 +1,30 @@
 import React, { useState } from "react";
 import Expenses from "./components/Expenses/Expense";
 import NewExpense from "./components/NewExpense/NewExpense";
+let storedExpenses = [];
 
-const DUMMY_EXPENSES = [
-  {
-    id: "el",
-    title: "Car Insurance",
-    amount: 14.23,
-    date: new Date(2023, 12, 29),
-  },
-  {
-    id: "em",
-    title: "Fuel",
-    amount: 194.09,
-    date: new Date(2020, 1, 28),
-  },
-  {
-    id: "en",
-    title: "Food",
-    amount: 24.6,
-    date: new Date(2021, 12, 27),
-  },
-  {
-    id: "eo",
-    title: "Clothes",
-    amount: 94.7,
-    date: new Date(2022, 6, 25),
-  },
-  {
-    id: "ep",
-    title: "TV",
-    amount: 994.7,
-    date: new Date(2022, 10, 22),
-  },
-];
+const storage = localStorage.getItem("expense");
+
+if (storage) storedExpenses = JSON.parse(storage);
+storedExpenses.map((exp) => (exp.date = new Date(exp.date)));
 
 const App = () => {
-  const [expenses, setExpenses] = useState(DUMMY_EXPENSES);
+  const [expenses, setExpenses] = useState(storedExpenses);
+  // const [storedExpenses, setStoredExpenses] = useState(DUMMY_EXPENSES);
 
   const addExpenseHandler = (expense) => {
     setExpenses((prevExpenses) => {
       return [expense, ...prevExpenses];
     });
   };
+  const persistExpenseHandler = function (Expense) {
+    localStorage.setItem("expense", JSON.stringify(Expense));
+  };
   return (
     <div>
       <NewExpense onAddExpenseData={addExpenseHandler} />
 
-      <Expenses items={expenses} />
+      <Expenses items={expenses} onPersistExpense={persistExpenseHandler} />
     </div>
   );
 };
